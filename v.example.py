@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-#
+"""
 ############################################################################
 #
 # MODULE:      v.example
 # AUTHOR(S):   {NAME}
 
 # PURPOSE:     {SHORT DESCRIPTION}
-# COPYRIGHT:   (C) {YEAR} by mundialis GmbH & Co. KG and the GRASS Development Team
+# COPYRIGHT:   (C) {YEAR} by mundialis GmbH & Co. KG and the GRASS Development
+#              Team
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +20,7 @@
 # GNU General Public License for more details.
 #
 #############################################################################
-
+"""
 # %Module
 # % description: {SHORT DESCRIPTION}.
 # % keyword: vector
@@ -53,19 +54,18 @@ import grass.script as grass
 # initialize global variables
 rm_vec = []
 
-# cleanup function (can be extended)
+
 def cleanup():
-    nuldev = open(os.devnull, "w")
+    """Cleanup fuction (can be extended)"""
+    nuldev = open(os.devnull, "w", encoding="utf-8")
     kwargs = {"flags": "f", "quiet": True, "stderr": nuldev}
     for rmvec in rm_vec:
         if grass.find_file(name=rmvec, element="vector")["file"]:
-            grass.run_command("g.remove",
-                              type="vector",
-                              name=rmvec,
-                              **kwargs)
+            grass.run_command("g.remove", type="vector", name=rmvec, **kwargs)
 
 
 def main():
+    """Main function of v.example"""
     global rm_vec
 
     pid = os.getpid()
@@ -73,34 +73,38 @@ def main():
     # set grid
     out_grid = f"kacheln_{pid}"
     rm_vec.append(out_grid)
-    grass.run_command("v.mkgrid",
-                      map=out_grid,
-                      position='region',
-                      box=options['box'],
-                      quiet=True)
+    grass.run_command(
+        "v.mkgrid",
+        map=out_grid,
+        position="region",
+        box=options["box"],
+        quiet=True,
+    )
     # extract only polygon_aoi area if given:
-    if options['polygon_aoi']:
+    if options["polygon_aoi"]:
         out_overlay = f"overlay_aoi_grid_{pid}"
         rm_vec.append(out_overlay)
-        grass.run_command("v.overlay",
-                          ainput=out_grid,
-                          binput=options['polygon_aoi'],
-                          operator='and',
-                          output=out_overlay)
+        grass.run_command(
+            "v.overlay",
+            ainput=out_grid,
+            binput=options["polygon_aoi"],
+            operator="and",
+            output=out_overlay,
+        )
     else:
         out_overlay = out_grid
     # divide into tiles
-    kachel_num = grass.parse_command("v.db.select",
-                                     map=out_overlay,
-                                     columns='cat',
-                                     flags='c',
-                                     quiet=True)
+    kachel_num = grass.parse_command(
+        "v.db.select", map=out_overlay, columns="cat", flags="c", quiet=True
+    )
     for kachel in kachel_num:
-        grass.run_command("v.extract",
-                          input=out_overlay,
-                          output=f"{options['output']}_{kachel}",
-                          cats=kachel,
-                          quiet=True)
+        grass.run_command(
+            "v.extract",
+            input=out_overlay,
+            output=f"{options['output']}_{kachel}",
+            cats=kachel,
+            quiet=True,
+        )
     grass.message(_(f"Created {len(kachel_num)} tiles."))
 
 
