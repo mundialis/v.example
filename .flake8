@@ -10,3 +10,4 @@ max-line-length = 80
 
 per-file-ignores =
    ./v.example.py: F821
+   ./v.example.py: E501
