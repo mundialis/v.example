@@ -152,7 +152,9 @@ def main():
             )
 
         # select attribute values with vector_db_select()
-        grass.message(_("Print attribute values using %s") % "vector_db_select()") 
+        grass.message(
+            _("Print attribute values using %s") % "vector_db_select()"
+        )
         column_values = grass.vector_db_select(
             aoi_vector, int(layer), columns=column
         )
@@ -162,7 +164,7 @@ def main():
             print(column_values["values"][key][0])
 
         # select attribute values with SQL statement
-        grass.message(_("Print attribute values using %s") % "db_select()") 
+        grass.message(_("Print attribute values using %s") % "db_select()")
         sql = f"select {column} from {table}"
         values = grass.db_select(sql=sql, database=database, driver=driver)
         for value in values:
