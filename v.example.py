@@ -72,8 +72,8 @@ rm_vec = []
 # cleanup function (can be extended)
 def cleanup():
     """Cleanup fuction (can be extended)"""
-    nuldev = open(os.devnull, "w", encoding="utf-8")
-    kwargs = {"flags": "f", "quiet": True, "stderr": nuldev}
+    nulldev = open(os.devnull, "w", encoding="utf-8")
+    kwargs = {"flags": "f", "quiet": True, "stderr": nulldev}
     for rmvec in rm_vec:
         if grass.find_file(name=rmvec, element="vector")["file"]:
             grass.run_command("g.remove", type="vector", name=rmvec, **kwargs)

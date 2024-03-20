@@ -7,6 +7,9 @@ to use this repository as a starting point.
 
 See also common [GRASS GIS addon methods](https://github.com/mundialis/grass-gis-helpers) which can be reused when writing your own addon.
 
+See also README about [How to create a GRASS GIS addon](https://github.com/mundialis/grass-gis-helpers/How-to-create-a-GRASS-GIS-addon.md) including
+best practises, structure, how to name it and more sources which might be usefull.
+
 ### Use pre-commit
 
 It is highly recommended to install and use [pre-commit](https://pre-commit.com)
