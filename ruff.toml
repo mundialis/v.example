@@ -1,0 +1,23 @@
+exclude = [
+    ".git",
+    "__pycache__",
+    ".env",
+    ".venv",
+    "env",
+    "venv",
+    "ENV",
+    "env.bak",
+    "venv.bak",
+    "ctypes",
+    "pydispatch",
+    "__init__.py",
+]
+
+lint.ignore = [
+    "E501",     # line-too-long
+    "INT001",   # f-string-in-get-text-func-call
+    "PLR0912",  # too-many-branches
+    "PLR0914",  # too-many-local-variables
+    "PLR0915",  # too-many-statements
+    "S608",  # Possible SQL injection vector through string-based query construction
+]
