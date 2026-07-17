@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+#
 ############################################################################
 #
 # MODULE:      v.example
-# AUTHOR(S):   {NAME}
-
+# AUTHOR(S):   {NAME}.
+#
 # PURPOSE:     {SHORT DESCRIPTION}
 # COPYRIGHT:   (C) {YEAR} by mundialis GmbH & Co. KG and the GRASS Development
 #              Team
@@ -20,7 +20,9 @@
 # GNU General Public License for more details.
 #
 #############################################################################
-"""
+
+"""Example GRASS vector module."""
+
 # %Module
 # % description: {SHORT DESCRIPTION}.
 # % keyword: vector
@@ -63,26 +65,28 @@
 # import needed libraries
 import atexit
 import os
+
 import grass.script as grass
+from grass_gis_helpers.cleanup import general_cleanup
 
 # initialize global variables
 rm_vec = []
 
 
 # cleanup function (can be extended)
-def cleanup():
-    """Cleanup fuction (can be extended)"""
-    nulldev = open(os.devnull, "w", encoding="utf-8")
-    kwargs = {"flags": "f", "quiet": True, "stderr": nulldev}
-    for rmvec in rm_vec:
-        if grass.find_file(name=rmvec, element="vector")["file"]:
-            grass.run_command("g.remove", type="vector", name=rmvec, **kwargs)
+def cleanup() -> None:
+    """Remove all not needed files at the end.
+
+    Cleanup fuction (can be extended).
+
+    """
+    general_cleanup(
+        rm_vectors=rm_vec,
+    )
 
 
-def main():
-    """Main function of v.example"""
-    global rm_vec
-
+def main() -> None:
+    """Execute the main function for the v.example module."""
     # print attribute values if requested
     if flags["p"] and options["polygon_aoi"] and options["column"]:
         aoi_vector = options["polygon_aoi"]
@@ -105,10 +109,10 @@ def main():
 
         # get attribute columns as dictionary (default)
         columns = grass.vector_columns(aoi_vector, layer, getDict=True)
-        if column not in columns.keys():
+        if column not in columns:
             grass.fatal(
                 _("Column %s does not exist in layer %s of vector %s")
-                % (column, layer, aoi_vector)
+                % (column, layer, aoi_vector),
             )
 
         # get attribute columns as list
@@ -119,13 +123,13 @@ def main():
         except ValueError:
             grass.fatal(
                 _("Column %s does not exist in layer %s of vector %s")
-                % (column, layer, aoi_vector)
+                % (column, layer, aoi_vector),
             )
 
         if colidx >= 0:
             grass.verbose(
                 _("Found column %s in vector %s, layer %s")
-                % (column, aoi_vector, layer)
+                % (column, aoi_vector, layer),
             )
 
         # query the database and table directly using information in the
@@ -135,7 +139,7 @@ def main():
         driver = db_connection["driver"]
 
         table_description = grass.db_describe(
-            table=table, database=database, driver=driver
+            table=table, database=database, driver=driver,
         )
         found = False
         # TODO: pythonize this for loop
@@ -148,15 +152,15 @@ def main():
         if found is False:
             grass.fatal(
                 _("Column %s does not exist in layer %s of vector %s")
-                % (column, layer, aoi_vector)
+                % (column, layer, aoi_vector),
             )
 
         # select attribute values with vector_db_select()
         grass.message(
-            _("Print attribute values using %s") % "vector_db_select()"
+            _("Print attribute values using %s") % "vector_db_select()",
         )
         column_values = grass.vector_db_select(
-            aoi_vector, int(layer), columns=column
+            aoi_vector, int(layer), columns=column,
         )
         # go over table rows
         for key in column_values["values"]:
@@ -164,8 +168,8 @@ def main():
             print(column_values["values"][key][0])
 
         # select attribute values with SQL statement
-        grass.message(_("Print attribute values using %s") % "db_select()")
-        sql = f"select {column} from {table}"
+        grass.message(_("Print attribute values using db_select()"))
+        sql = f"select %s{column} from {table}"
         values = grass.db_select(sql=sql, database=database, driver=driver)
         for value in values:
             print(value[0])
@@ -198,7 +202,7 @@ def main():
         out_overlay = out_grid
     # divide into tiles
     kachel_num = grass.parse_command(
-        "v.db.select", map=out_overlay, columns="cat", flags="c", quiet=True
+        "v.db.select", map=out_overlay, columns="cat", flags="c", quiet=True,
     )
     for kachel in kachel_num:
         grass.run_command(
@@ -212,6 +216,7 @@ def main():
 
 
 if __name__ == "__main__":
+    """Parse grass options and flags and run main function."""
     options, flags = grass.parser()
     atexit.register(cleanup)
     main()

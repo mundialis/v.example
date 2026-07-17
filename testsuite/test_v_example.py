@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""
+#
 ############################################################################
 #
 # MODULE:      v.tiles test
-# AUTHOR(S):   Lina Krisztian
-
+# AUTHOR(S):   Lina Krisztian.
+#
 # PURPOSE:      Tests v.tiles
 # COPYRIGHT:   (C) 2022 by mundialis GmbH & Co. KG and the GRASS Development
 #              Team
@@ -20,23 +20,29 @@
 # GNU General Public License for more details.
 #
 #############################################################################
-"""
+
+"""Tests v.tiles."""
 
 import os
+from pathlib import Path
+from typing import ClassVar
 
-from grass.gunittest.case import TestCase
-from grass.gunittest.main import test
-from grass.gunittest.gmodules import SimpleModule
 import grass.script as grass
+from grass.gunittest.case import TestCase
+from grass.gunittest.gmodules import SimpleModule
+from grass.gunittest.main import test
+
+EXPECTED_CREATED_TILES = 56
+EXPECTED_CREATED_TILES_AOI = 37
 
 
 class TestVTiles(TestCase):
     """Test class with as an example for the example addon v.example."""
 
     pid = os.getpid()
-    rm_vec_class = []
-    rm_vec_test = []
-    region_vec_file = os.path.join("data", "area_beuel.geojson")
+    rm_vec_class: ClassVar[list[str]] = []
+    rm_vec_test: ClassVar[list[str]] = []
+    region_vec_file = str(Path("data") / "area_beuel.geojson")
     region_vec = f"beuel_vec_{pid}"
     rm_vec_class.append(region_vec)
     output_base = f"tile_{pid}"
@@ -44,46 +50,48 @@ class TestVTiles(TestCase):
 
     @classmethod
     # pylint: disable=invalid-name
-    def setUpClass(cls):
-        """Ensures expected computational region and generated data"""
+    def setUpClass(cls) -> None:
+        """Ensure expected computational region and generated data."""
         # import and set region
         cls.runModule(
-            "v.import", input=cls.region_vec_file, output=cls.region_vec
+            "v.import", input=cls.region_vec_file, output=cls.region_vec,
         )
         cls.runModule("g.region", vector=cls.region_vec, res=1000, flags="a")
 
     @classmethod
     # pylint: disable=invalid-name
-    def tearDownClass(cls):
-        """Remove the temporary region and generated data"""
+    def tearDownClass(cls) -> None:
+        """Remove the temporary region and generated data."""
         for vec in cls.rm_vec_class:
             cls.runModule("g.remove", type="vector", name=vec, flags="f")
 
     # pylint: disable=invalid-name
-    def tearDown(self):
-        """Remove the outputs created
+    def tearDown(self) -> None:
+        """Remove the outputs created.
+
         This is executed after each test run.
+
         """
         for vec in self.rm_vec_test:
             self.runModule(
-                "g.remove", type="vector", pattern=f"{vec}*", flags="f"
+                "g.remove", type="vector", pattern=f"{vec}*", flags="f",
             )
 
-    def test_v_tiles(self):
-        """Test v.tiles without polygon_aoi map given"""
+    def test_v_tiles(self) -> None:
+        """Test v.tiles without polygon_aoi map given."""
         v_check = SimpleModule(
-            "v.tiles", output=self.output_base, box=[1000, 1000]
+            "v.tiles", output=self.output_base, box=[1000, 1000],
         )
         self.assertModule(v_check)
         # check if output is the desired one
         tiles = grass.parse_command(
-            "g.list", pattern=f"{self.output_base}*", type="vector"
+            "g.list", pattern=f"{self.output_base}*", type="vector",
         )
         # expect creation of 56 tiles
-        self.assertTrue(len(tiles) == 56)
+        assert len(tiles) == EXPECTED_CREATED_TILES
 
-    def test_v_tiles_with_polygonaoi(self):
-        """Test v.tiles with polygon_aoi map given"""
+    def test_v_tiles_with_polygonaoi(self) -> None:
+        """Test v.tiles with polygon_aoi map given."""
         v_check = SimpleModule(
             "v.tiles",
             output=self.output_base,
@@ -93,11 +101,12 @@ class TestVTiles(TestCase):
         self.assertModule(v_check)
         # check if output is the desired one
         tiles = grass.parse_command(
-            "g.list", pattern=f"{self.output_base}*", type="vector"
+            "g.list", pattern=f"{self.output_base}*", type="vector",
         )
         # expect creation of 37 tiles
-        self.assertTrue(len(tiles) == 37)
+        assert len(tiles) == EXPECTED_CREATED_TILES_AOI
 
 
 if __name__ == "__main__":
+    """Run tests."""
     test()

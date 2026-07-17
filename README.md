@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -->
 ## DESCRIPTION
 
 *v.example* is an example for a GRASS GIS addon. Here comes a short description of the module and under [Notes](#notes) the usage of this example addon is explained. **Note** that this `README.md` is part of the documentation as well as part of the required components of a GRASS GIS addon.
