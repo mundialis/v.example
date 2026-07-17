@@ -54,7 +54,9 @@ class TestVTiles(TestCase):
         """Ensure expected computational region and generated data."""
         # import and set region
         cls.runModule(
-            "v.import", input=cls.region_vec_file, output=cls.region_vec,
+            "v.import",
+            input=cls.region_vec_file,
+            output=cls.region_vec,
         )
         cls.runModule("g.region", vector=cls.region_vec, res=1000, flags="a")
 
@@ -74,18 +76,25 @@ class TestVTiles(TestCase):
         """
         for vec in self.rm_vec_test:
             self.runModule(
-                "g.remove", type="vector", pattern=f"{vec}*", flags="f",
+                "g.remove",
+                type="vector",
+                pattern=f"{vec}*",
+                flags="f",
             )
 
     def test_v_tiles(self) -> None:
         """Test v.tiles without polygon_aoi map given."""
         v_check = SimpleModule(
-            "v.tiles", output=self.output_base, box=[1000, 1000],
+            "v.tiles",
+            output=self.output_base,
+            box=[1000, 1000],
         )
         self.assertModule(v_check)
         # check if output is the desired one
         tiles = grass.parse_command(
-            "g.list", pattern=f"{self.output_base}*", type="vector",
+            "g.list",
+            pattern=f"{self.output_base}*",
+            type="vector",
         )
         # expect creation of 56 tiles
         assert len(tiles) == EXPECTED_CREATED_TILES
@@ -101,7 +110,9 @@ class TestVTiles(TestCase):
         self.assertModule(v_check)
         # check if output is the desired one
         tiles = grass.parse_command(
-            "g.list", pattern=f"{self.output_base}*", type="vector",
+            "g.list",
+            pattern=f"{self.output_base}*",
+            type="vector",
         )
         # expect creation of 37 tiles
         assert len(tiles) == EXPECTED_CREATED_TILES_AOI

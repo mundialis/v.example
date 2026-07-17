@@ -139,7 +139,9 @@ def main() -> None:
         driver = db_connection["driver"]
 
         table_description = grass.db_describe(
-            table=table, database=database, driver=driver,
+            table=table,
+            database=database,
+            driver=driver,
         )
         found = False
         # TODO: pythonize this for loop
@@ -160,7 +162,9 @@ def main() -> None:
             _("Print attribute values using %s") % "vector_db_select()",
         )
         column_values = grass.vector_db_select(
-            aoi_vector, int(layer), columns=column,
+            aoi_vector,
+            int(layer),
+            columns=column,
         )
         # go over table rows
         for key in column_values["values"]:
@@ -202,7 +206,11 @@ def main() -> None:
         out_overlay = out_grid
     # divide into tiles
     kachel_num = grass.parse_command(
-        "v.db.select", map=out_overlay, columns="cat", flags="c", quiet=True,
+        "v.db.select",
+        map=out_overlay,
+        columns="cat",
+        flags="c",
+        quiet=True,
     )
     for kachel in kachel_num:
         grass.run_command(
