@@ -1,4 +1,18 @@
-# Example GRASS GIS Addon
+## DESCRIPTION
+
+*v.example* is an example for a GRASS GIS addon. Here comes a short description of the module and under [Notes](#notes) the usage of this example addon is explained. **Note** that this `README.md` is part of the documentation as well as part of the required components of a GRASS GIS addon.
+
+New paragraph for more detailed description.
+
+## NOTES
+
+Rather technical notes are here.
+
+Description of the algorithm or method
+
+Hints for usage, e.g. for large maps or a large number of input arguments.
+
+### Example GRASS GIS addon
 
 This Repository contains a GRASS GIS addon including all meta files
 like github workflows, linter configs, test setup etc.
@@ -7,7 +21,7 @@ to use this repository as a starting point.
 
 See also common [GRASS GIS addon methods](https://github.com/mundialis/grass-gis-helpers) which can be reused when writing your own addon.
 
-See also README about [How to create a GRASS GIS addon](https://github.com/mundialis/grass-gis-helpers/How-to-create-a-GRASS-GIS-addon.md) including
+See also README about [How to create a GRASS GIS addon](https://github.com/mundialis/grass-gis-helpers/blob/main/How-to-create-a-GRASS-GIS-addon.md) including
 best practises, structure, how to name it and more sources which might be usefull.
 
 ### Use pre-commit
@@ -68,3 +82,31 @@ And to reactivate pre-commit again:
 git switch main
 pre-commit install
 ```
+
+## EXAMPLE
+
+### Create grid for current region with grid box size of 1000 x 1000
+
+```sh
+v.example output=tiles box=1000,1000
+```
+
+### Extract tiles only for a given polygon "poly_aoi"
+
+```sh
+v.select ainput=tiles atype=area binput=poly_aoi btype=area operator=overlap output=tiles_aoi
+```
+
+Image with the result
+
+[![image-alt](v_example.png)](v_example.png)
+*Figure: Vector map .... something.*
+
+## SEE ALSO
+
+* [v.mkgrid](v.mkgrid.md),
+* [g.region](g.region.md)
+
+## AUTHORS
+
+Name, [mundialis](https://www.mundialis.de/)
