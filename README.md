@@ -44,7 +44,7 @@ Pre-commit must then be activated in the code repository. Change the directory
 to the root folder and use the `install` command:
 
 ```bash
-cd <actinia-core_source_dir>
+cd <source_dir>
 
 # once per repo
 pre-commit install
